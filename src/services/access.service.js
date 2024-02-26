@@ -15,7 +15,7 @@ class AccessService {
   static signUp = async ({ name, email, password }) => {
     try {
       //step 1: check email exist
-      const holderShop = await shopModel.findOne({ email }).lean();
+      const holderShop = await shopModel.findOne({ email }).lean(); // Lean: convert to plain object
       console.log("🏆 ~ AccessService ~ signUp= ~ holderShop:", holderShop);
 
       if (holderShop) {
