@@ -3,6 +3,9 @@
 const shopModel = require("../models/shop.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const KeyTokenService = require("./keyToken.service");
+const { createTokenPair } = require("../auth/authUtils");
+const { getInfoData } = require("../utils");
 
 const RoleShop = {
   SHOP: "SHOP",
@@ -36,14 +39,51 @@ class AccessService {
 
       if (newShop) {
         // created privateKey, publicKey
-        const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", {
-          modulusLength: 4096,
-        });
+        const privateKey = crypto.randomBytes(64).toString("hex");
+        const publicKey = crypto.randomBytes(64).toString("hex");
 
         console.log({ publicKey, privateKey }); // save collection KeyStore
+
+        // created Keystore
+        const keyStore = await KeyTokenService.createKeyToken({
+          userId: newShop._id,
+          publicKey,
+          privateKey,
+        });
+
+        if (!keyStore) {
+          return {
+            code: "xxx",
+            message: "PublicKeyString error",
+          };
+        }
+
+        // created token pair
+        const tokens = await createTokenPair(
+          {
+            userId: newShop._id,
+            email,
+          },
+          publicKey,
+          privateKey
+        );
+
+        return {
+          code: 201,
+          metadata: {
+            shop: getInfoData({
+              fields: ["_id", "name", "email"],
+              object: newShop,
+            }),
+            tokens,
+          },
+        };
       }
 
-      console.log("🏆 ~ AccessService ~ signUp= ~ newShop:", newShop);
+      return {
+        code: 200,
+        metadata: null,
+      };
     } catch (error) {
       return {
         code: "xxx",
