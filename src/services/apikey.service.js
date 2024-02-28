@@ -1,8 +1,8 @@
 "use strict";
 
-const apikeyModule = require("../models/apikey.module");
+const apikeyModel = require("../models/apikey.model");
 const findById = async (key) => {
-  const objKey = await apikeyModule
+  const objKey = await apikeyModel
     .findOne({
       key: key,
       status: true,
