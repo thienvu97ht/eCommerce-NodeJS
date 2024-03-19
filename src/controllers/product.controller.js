@@ -1,7 +1,6 @@
 'use strict';
 
 const { SuccessResponse } = require('../core/success.response');
-const ProductFactory = require('../services/product.service');
 const ProductFactoryV2 = require('../services/product.service.xxx');
 
 class ProductController {
@@ -65,6 +64,22 @@ class ProductController {
     new SuccessResponse({
       message: 'Get list search success!',
       metadata: await ProductFactoryV2.searchProduct(req.params),
+    }).send(res);
+  };
+
+  findAllProducts = async (req, res, next) => {
+    new SuccessResponse({
+      message: 'Get list product success!',
+      metadata: await ProductFactoryV2.findAllProducts(req.query),
+    }).send(res);
+  };
+
+  findProduct = async (req, res, next) => {
+    new SuccessResponse({
+      message: 'Get list product success!',
+      metadata: await ProductFactoryV2.findProduct({
+        product_id: req.params.id,
+      }),
     }).send(res);
   };
   // END QUERY //
