@@ -1,3 +1,13 @@
 {
-  "cSpell.words": ["Apikey", "Apikeys", "furnitures", "inven", "keytoken", "signup", "unpublish", "upsert"]
+  "cSpell.words": [
+    "Apikey",
+    "Apikeys",
+    "furnitures",
+    "inven",
+    "keytoken",
+    "signup",
+    "timeseries",
+    "unpublish",
+    "upsert"
+  ]
 }
