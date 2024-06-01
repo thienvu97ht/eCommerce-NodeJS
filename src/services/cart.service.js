@@ -2,6 +2,7 @@
 
 const { cart } = require('../models/cart.model');
 const { BadRequestError, NotFoundError } = require('../core/error.response');
+const { getProductById } = require('../models/repositories/product.repo');
 
 /*
     Key features: Car Service
@@ -66,6 +67,70 @@ class CartService {
 
     // giỏ hàng tồn tại và có sản phẩm này thì update quantity
     return await CartService.updateUserCartQuantity({ userId, product });
+  }
+
+  // update cart
+  /*
+    shop_order_ids: [
+      {
+        shopId,
+        item_products: [
+          {
+            quantity,
+            price,
+            shopId,
+            old_quantity,
+            productId
+          }
+        ],
+        version
+      }
+    ]
+  */
+  static async addToCartV2({ userId, shop_order_ids }) {
+    const { productId, quantity, old_quantity } = shop_order_ids[0]?.item_products[0];
+
+    // check product
+    const foundProduct = await getProductById(productId);
+    if (!foundProduct) throw new NotFoundError('');
+    // compare
+    if (foundProduct.product_shop.toString() !== shop_order_ids[0].shopId) {
+      throw new NotFoundError('Product do not belong to the shop');
+    }
+
+    if (quantity === 0) {
+      // deleted
+    }
+
+    return await CartService.updateUserCartQuantity({
+      userId,
+      product: {
+        productId,
+        quantity: quantity - old_quantity,
+      },
+    });
+  }
+
+  static async deleteUserCart({ userId, productId }) {
+    const query = { cart_userId: userId, cart_state: 'active' };
+    const updateSet = {
+      $pull: {
+        cart_products: {
+          productId,
+        },
+      },
+    };
+
+    const deleteCart = await cart.updateOne(query, updateSet);
+    return deleteCart;
+  }
+
+  static async getListUserCart({ userId }) {
+    return await cart
+      .findOne({
+        cart_userId: userId,
+      })
+      .lean();
   }
 }
 
