@@ -180,6 +180,7 @@ class DiscountService {
       discount_type,
       discount_value,
     } = foundDiscount;
+    console.log('🏆 ~ DiscountService ~ getDiscountAmount ~ discount_is_active:', discount_is_active);
 
     if (!discount_is_active) throw new NotFoundError('Discount expired!');
     if (!discount_max_uses) throw new NotFoundError('Discount are out!');
