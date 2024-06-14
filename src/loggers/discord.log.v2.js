@@ -18,10 +18,27 @@ class LoggerService {
     this.channelId = CHANNEL_ID_DISCORD;
 
     this.client.on('ready', () => {
-      console.log(`Logged is as ${client.user.tag}`);
+      console.log(`Logged is as ${this.client.user.tag}!`);
     });
 
     this.client.login(TOKEN_DISCORD);
+  }
+
+  sendToFormatCode(logData) {
+    const { code, message = 'This is some additional information about the code', title = 'Code Example' } = logData;
+
+    const codeMessage = {
+      content: message,
+      embeds: [
+        {
+          color: parseInt('00f00', 16), // Convert hexadecimal color code to integer
+          title,
+          description: '```json\n' + JSON.stringify(code, null, 2) + 'n```',
+        },
+      ],
+    };
+
+    this.sendToMessage(codeMessage);
   }
 
   sendToMessage(message = 'message') {
@@ -30,7 +47,7 @@ class LoggerService {
       console.error(`Couldn't find the channel...`, this.channelId);
     }
 
-    channel.send(message).cache((e) => console.error(e));
+    channel.send(message).catch((e) => console.error(e));
   }
 }
 
