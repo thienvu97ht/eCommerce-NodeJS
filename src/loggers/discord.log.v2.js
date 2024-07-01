@@ -21,7 +21,7 @@ class LoggerService {
       console.log(`Logged is as ${this.client.user.tag}!`);
     });
 
-    this.client.login(TOKEN_DISCORD);
+    // this.client.login(TOKEN_DISCORD);
   }
 
   sendToFormatCode(logData) {

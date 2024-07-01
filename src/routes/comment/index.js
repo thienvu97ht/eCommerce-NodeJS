@@ -12,6 +12,7 @@ router.use(authenticationV2);
 
 router.get('', asyncHandler(commentController.getCommentByParentId));
 router.post('', asyncHandler(commentController.createComment));
+router.delete('', asyncHandler(commentController.deleteComment));
 
 // QUERY //
 
